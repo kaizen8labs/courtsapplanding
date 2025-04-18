@@ -16,17 +16,17 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-green-900 text-white py-12 mt-auto">
+    <footer className="bg-black text-white py-12 mt-auto">
       <div className="container mx-auto px-4 md:px-8">
         <div className="flex flex-col items-center">
-          <div className="text-2xl font-bold mb-8 bg-gradient-to-r from-green-300 to-white text-transparent bg-clip-text">CourtsApp</div>
+          <div className="text-2xl font-bold mb-8 text-white">CourtsApp</div>
           
           <div className="flex space-x-6 mb-8">
             {socialLinks.map((social, index) => (
               <a 
                 key={index}
                 href={social.url} 
-                className="text-white hover:text-green-300 transition-colors" 
+                className="text-gray-400 hover:text-white transition-colors" 
                 aria-label={social.label}
               >
                 <social.Icon className="text-xl" />
@@ -39,14 +39,14 @@ export default function Footer() {
               <a 
                 key={index}
                 href={policy.url} 
-                className="text-green-200 hover:text-white transition-colors text-sm"
+                className="text-gray-400 hover:text-white transition-colors text-sm"
               >
                 {policy.label}
               </a>
             ))}
           </div>
           
-          <div className="text-green-300 text-sm">
+          <div className="text-gray-500 text-sm">
             &copy; {new Date().getFullYear()} CourtsApp. All rights reserved.
           </div>
         </div>

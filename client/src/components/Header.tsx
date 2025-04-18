@@ -19,10 +19,10 @@ export default function Header() {
   };
   
   return (
-    <header className="py-6 bg-white shadow-sm">
+    <header className="py-6 bg-white shadow-sm border-b border-gray-200">
       <div className="container mx-auto px-4 md:px-8 flex justify-between items-center">
         <div className="flex items-center">
-          <div className="text-3xl font-bold bg-gradient-to-r from-green-700 to-green-500 text-transparent bg-clip-text">
+          <div className="text-3xl font-bold text-black">
             CourtsApp
           </div>
         </div>
@@ -32,23 +32,15 @@ export default function Header() {
             <li>
               <button 
                 onClick={() => handleLinkClick('about')}
-                className="text-gray-600 hover:text-primary transition-colors"
+                className="text-gray-700 hover:text-black transition-colors"
               >
                 About
               </button>
             </li>
             <li>
               <button 
-                onClick={() => handleLinkClick('features')}
-                className="text-gray-600 hover:text-primary transition-colors"
-              >
-                Features
-              </button>
-            </li>
-            <li>
-              <button 
                 onClick={() => handleLinkClick('contact')}
-                className="text-gray-600 hover:text-primary transition-colors"
+                className="text-gray-700 hover:text-black transition-colors"
               >
                 Contact
               </button>
@@ -67,19 +59,13 @@ export default function Header() {
             <nav className="flex flex-col gap-4 mt-8">
               <button 
                 onClick={() => handleLinkClick('about')} 
-                className="text-lg font-medium py-2"
+                className="text-lg font-medium py-2 text-gray-800 hover:text-black"
               >
                 About
               </button>
               <button 
-                onClick={() => handleLinkClick('features')} 
-                className="text-lg font-medium py-2"
-              >
-                Features
-              </button>
-              <button 
                 onClick={() => handleLinkClick('contact')} 
-                className="text-lg font-medium py-2"
+                className="text-lg font-medium py-2 text-gray-800 hover:text-black"
               >
                 Contact
               </button>
