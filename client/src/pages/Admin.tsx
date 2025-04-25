@@ -1,13 +1,55 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Loader2, Trash2 } from "lucide-react";
 import { ContactSubmission } from "@shared/schema";
-import { getQueryFn } from "@/lib/queryClient";
+import { getQueryFn, apiRequest } from "@/lib/queryClient";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export default function Admin() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [submissionToDelete, setSubmissionToDelete] = useState<ContactSubmission | null>(null);
+  const queryClient = useQueryClient();
+
+  // Delete mutation
+  const deleteMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const response = await apiRequest('DELETE', `/api/contact-submissions/${id}`);
+      if (!response.ok) {
+        throw new Error('Failed to delete submission');
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/contact-submissions'] });
+      setDeleteDialogOpen(false);
+      setSubmissionToDelete(null);
+    },
+    onError: (error) => {
+      setError(error.message || "Failed to delete submission");
+    }
+  });
+
+  const handleDelete = (submission: ContactSubmission) => {
+    setSubmissionToDelete(submission);
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (submissionToDelete) {
+      deleteMutation.mutate(submissionToDelete.id);
+    }
+  };
 
   // Simple authentication - in a real app, this would use proper auth
   const handleAuthenticate = (e: React.FormEvent) => {
@@ -111,6 +153,7 @@ export default function Admin() {
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Message</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
@@ -133,6 +176,14 @@ export default function Admin() {
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           {new Date(submission.createdAt).toLocaleString()}
                         </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <button
+                            onClick={() => handleDelete(submission)}
+                            className="text-red-600 hover:text-red-800 transition-colors"
+                          >
+                            <Trash2 className="h-5 w-5" />
+                          </button>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -142,6 +193,27 @@ export default function Admin() {
           </div>
         </div>
       </div>
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the submission
+              from {submissionToDelete?.firstName} {submissionToDelete?.lastName}.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDelete}
+              className="bg-red-600 hover:bg-red-700 text-white"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

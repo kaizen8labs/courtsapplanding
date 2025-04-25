@@ -15,12 +15,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { contactFormSchema, type ContactFormData } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
 export default function ContactForm() {
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [smsConsent, setSmsConsent] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<ContactFormData>({
@@ -29,6 +31,7 @@ export default function ContactForm() {
       firstName: "",
       lastName: "",
       email: "",
+      phoneNumber: "",
       message: ""
     }
   });
@@ -127,6 +130,25 @@ export default function ContactForm() {
                       </FormItem>
                     )}
                   />
+
+                  <FormField
+                    control={form.control}
+                    name="phoneNumber"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Phone Number</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="tel" 
+                            placeholder="(123) 456-7890" 
+                            {...field} 
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                   
                   <FormField
                     control={form.control}
@@ -146,10 +168,25 @@ export default function ContactForm() {
                       </FormItem>
                     )}
                   />
+
+                  <div className="flex items-start space-x-2">
+                    <Checkbox 
+                      id="sms-consent" 
+                      checked={smsConsent}
+                      onCheckedChange={(checked) => setSmsConsent(checked as boolean)}
+                    />
+                    <label 
+                      htmlFor="sms-consent" 
+                      className="text-sm text-gray-700 leading-tight"
+                    >
+                      I consent to receive SMS notifications/alerts from CourtsApp. Message frequency varies. Message and data rates may apply. Text HELP for assistance. Reply STOP to unsubscribe.
+                    </label>
+                  </div>
                   
                   <Button 
                     type="submit" 
                     className="w-full bg-black hover:bg-gray-800 text-white font-semibold py-3 px-6 rounded-lg transition-colors shadow-md hover:shadow-lg"
+                    disabled={!smsConsent}
                   >
                     Submit
                   </Button>

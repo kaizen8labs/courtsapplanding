@@ -1,0 +1,12 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "outDir": "../dist",
+    "module": "ESNext",
+    "target": "ESNext",
+    "moduleResolution": "node"
+  },
+  "include": ["./**/*", "../shared/**/*"],
+  "exclude": ["node_modules", "dist"]
+} 

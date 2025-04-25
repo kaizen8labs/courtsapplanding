@@ -12,6 +12,7 @@ export interface IStorage {
   getContactSubmissions(): Promise<ContactSubmission[]>;
   getContactSubmission(id: number): Promise<ContactSubmission | undefined>;
   createContactSubmission(data: ContactFormData): Promise<ContactSubmission>;
+  deleteContactSubmission(id: number): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -55,6 +56,14 @@ export class DatabaseStorage implements IStorage {
       })
       .returning();
     return submission;
+  }
+
+  async deleteContactSubmission(id: number): Promise<boolean> {
+    const [deleted] = await db
+      .delete(contactSubmissions)
+      .where(eq(contactSubmissions.id, id))
+      .returning();
+    return !!deleted;
   }
 }
 

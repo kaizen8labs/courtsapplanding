@@ -23,6 +23,7 @@ export const contactSubmissions = pgTable("contact_submissions", {
   firstName: text("first_name").notNull(),
   lastName: text("last_name").notNull(),
   email: text("email").notNull(),
+  phoneNumber: text("phone_number"),
   message: text("message").notNull(),
   createdAt: text("created_at").notNull().default(new Date().toISOString()),
 });
@@ -32,6 +33,7 @@ export const contactFormSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
   email: z.string().email("Please enter a valid email address"),
+  phoneNumber: z.string().optional(),
   message: z.string().min(1, "Message is required"),
 });
 

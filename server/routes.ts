@@ -73,6 +73,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Delete a contact form submission
+  app.delete('/api/contact-submissions/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid ID format" });
+      }
+      
+      const deleted = await storage.deleteContactSubmission(id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Submission not found" });
+      }
+      
+      res.status(200).json({ message: "Submission deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting contact submission:", error);
+      res.status(500).json({
+        message: "An error occurred while deleting the contact submission"
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
